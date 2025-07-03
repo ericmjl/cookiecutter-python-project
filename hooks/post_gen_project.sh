@@ -74,6 +74,8 @@ fi
 echo "🔧 Installing pre-commit hooks..."
 if command -v pre-commit &> /dev/null; then
     pre-commit install
+    echo "🔄 Updating pre-commit hooks to latest versions..."
+    pre-commit autoupdate
 else
     echo "❌ pre-commit not found. Please install it first."
     echo "   You can install it with: uv tool install pre-commit"
