@@ -82,10 +82,14 @@ else
     exit 1
 fi
 
-# Make initial commit
+# Make initial commit (with safety mechanism for pre-commit hooks)
 echo "📝 Making initial commit..."
 git add .
-git commit -m "Initial commit"
+git commit -m "Initial commit" || {
+    echo "⚠️  First commit failed, likely due to pre-commit hooks. Retrying..."
+    git add .
+    git commit -m "Initial commit"
+}
 
 echo "🎉 Your project has been successfully initialized!"
 echo ""
