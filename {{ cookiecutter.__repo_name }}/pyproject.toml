@@ -57,6 +57,13 @@ profile = "black"
 # See https://docs.astral.sh/ruff/configuration/#using-pyprojecttoml for configuration documentation
 select = ["E", "F", "I"]
 
+[tool.pydoclint]
+style = 'sphinx'
+exclude = '\.git|\.tox|tests/data'
+require-return-section-when-returning-none = false
+arg-type-hints-in-docstring = false
+check-return-types = false
+
 [tool.setuptools]
 include-package-data = true
 
