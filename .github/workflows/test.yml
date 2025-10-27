@@ -28,7 +28,7 @@ jobs:
           TEMP_DIR=$(mktemp -d)
 
           # Run cookiecutter from workspace directory to maintain pixi context
-          cd /github/workspace
+          cd "$GITHUB_WORKSPACE"
           pixi run cookiecutter . --output-dir "$TEMP_DIR" \
             --no-input \
             project_name="Test Project" \
