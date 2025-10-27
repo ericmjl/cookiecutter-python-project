@@ -8,6 +8,9 @@ version = "0.1.0"
 python = ">=3.10"
 pytest = "*"
 pytest-cov = "*"
+pyyaml = "*"
+toml = "*"
+cookiecutter = "*"
 
 [tasks]
 test = "pytest tests/ -v"

@@ -1,0 +1,121 @@
+name: Test cookiecutter template and hooks
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  test-template:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    name: Test cookiecutter template (${{ matrix.os }})
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - uses: prefix-dev/setup-pixi@v0.8.8
+        with:
+          cache: true
+
+      - name: Install cookiecutter
+        run: |
+          pixi add cookiecutter
+
+      - name: Test cookiecutter template generation
+        run: |
+          # Create a temporary directory for testing
+          TEMP_DIR=$(mktemp -d)
+          cd "$TEMP_DIR"
+
+          # Generate a project using the template
+          pixi run cookiecutter /github/workspace \
+            --no-input \
+            project_name="Test Project" \
+            short_description="A test project" \
+            github_username="testuser" \
+            full_name="Test User" \
+            email="test@example.com"
+
+          # Verify the generated project structure
+          PROJECT_DIR="test-project"
+          if [ ! -d "$PROJECT_DIR" ]; then
+            echo "Project directory was not created"
+            echo "Available directories:"
+            ls -la
+            exit 1
+          fi
+
+          cd "$PROJECT_DIR"
+
+          # Check that essential files exist
+          if [ ! -f "pyproject.toml" ]; then
+            echo "pyproject.toml was not created"
+            exit 1
+          fi
+
+          if [ ! -f "README.md" ]; then
+            echo "README.md was not created"
+            exit 1
+          fi
+
+          # Note: The post-generation hook may fail in CI due to missing dependencies
+          # (gh CLI, pixi, etc.), so we'll check for the hook's existence instead
+          echo "✅ Template generation completed successfully"
+          echo "Generated files:"
+          ls -la
+
+      - name: Test post-generation hook content
+        run: |
+          # Verify that the post-generation hook contains expected functionality
+          HOOK_FILE="hooks/post_gen_project.sh"
+
+          if [ ! -f "$HOOK_FILE" ]; then
+            echo "Post-generation hook file not found"
+            exit 1
+          fi
+
+          # Check for key functionality in the hook
+          if ! grep -q "Create .env file" "$HOOK_FILE"; then
+            echo "Hook does not contain .env file creation"
+            exit 1
+          fi
+
+          if ! grep -q "git init" "$HOOK_FILE"; then
+            echo "Hook does not contain git initialization"
+            exit 1
+          fi
+
+          if ! grep -q "pixi install" "$HOOK_FILE"; then
+            echo "Hook does not contain pixi installation"
+            exit 1
+          fi
+
+          if ! grep -q "gh repo create" "$HOOK_FILE"; then
+            echo "Hook does not contain GitHub repository creation"
+            exit 1
+          fi
+
+          echo "✅ Post-generation hook contains all expected functionality"
+
+  test-python-tests:
+    runs-on: ubuntu-latest
+    name: Run Python tests
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - uses: prefix-dev/setup-pixi@v0.8.8
+        with:
+          cache: true
+
+      - name: Run tests
+        run: pixi run test
+
+      - name: Run tests with coverage
+        run: pixi run test-cov
