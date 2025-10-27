@@ -26,10 +26,10 @@ jobs:
         run: |
           # Create a temporary directory for testing
           TEMP_DIR=$(mktemp -d)
-          cd "$TEMP_DIR"
 
-          # Generate a project using the template
-          pixi run --manifest-path /github/workspace/pixi.toml cookiecutter /github/workspace \
+          # Run cookiecutter from workspace directory to maintain pixi context
+          cd /github/workspace
+          pixi run cookiecutter . --output-dir "$TEMP_DIR" \
             --no-input \
             project_name="Test Project" \
             short_description="A test project" \
@@ -38,11 +38,11 @@ jobs:
             email="test@example.com"
 
           # Verify the generated project structure
-          PROJECT_DIR="test-project"
+          PROJECT_DIR="$TEMP_DIR/test-project"
           if [ ! -d "$PROJECT_DIR" ]; then
             echo "Project directory was not created"
-            echo "Available directories:"
-            ls -la
+            echo "Available directories in $TEMP_DIR:"
+            ls -la "$TEMP_DIR"
             exit 1
           fi
 
