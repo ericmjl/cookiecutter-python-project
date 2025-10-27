@@ -34,10 +34,10 @@ jobs:
       - name: Validate TOML files
         run: |
           # Check pixi.toml syntax
-          python -c "import toml; toml.load('pixi.toml')"
+          pixi run python -c "import toml; toml.load('pixi.toml')"
 
           # Check cookiecutter.json syntax
-          python -c "import json; json.load(open('cookiecutter.json'))"
+          pixi run python -c "import json; json.load(open('cookiecutter.json'))"
 
       - name: Check file permissions
         run: |
