@@ -19,8 +19,7 @@ This template creates a fully-featured Python project with modern tooling and be
 - **Pixi** for fast, reliable dependency management
 - **Typer** for beautiful CLI interfaces
 - **Pre-commit** for code quality hooks
-- **Black** for code formatting
-- **Ruff** for fast linting
+- **Ruff** for formatting, linting, and import sorting
 - **Interrogate** for documentation coverage
 
 ### 📦 Pre-configured Dependencies
@@ -95,11 +94,10 @@ your-project/
 │   ├── index.md
 │   ├── api.md
 │   └── ...
-├── pyproject.toml          # Project configuration
+├── pyproject.toml          # Project configuration (Hatchling build + Ruff)
 ├── README.md              # Project documentation
 ├── .env                   # Environment variables (gitignored)
-├── .gitignore
-└── MANIFEST.in
+└── .gitignore
 ```
 
 ## Development Workflow
@@ -203,9 +201,7 @@ export DATABASE_URL="your-database-url"
 ### Pre-commit Hooks
 
 The template includes pre-commit hooks for:
-- Code formatting (Black)
-- Import sorting (isort)
-- Linting (Ruff)
+- Formatting and linting (Ruff, including import sorting via the `I` rules)
 - Documentation coverage (Interrogate)
 
 ## Publishing
