@@ -4,8 +4,13 @@ set -e
 
 echo "🚀 Initializing your new Python project..."
 
-# Change to the generated project directory
-cd "{{ cookiecutter.__repo_name }}"
+# Cookiecutter runs this hook with cwd already at the generated project root
+# (the folder named "{{ cookiecutter.__repo_name }}"). Only cd if we are still
+# in the parent directory (older/alternate Cookiecutter behavior).
+REPO="{{ cookiecutter.__repo_name }}"
+if [ "$(basename "$PWD")" != "$REPO" ] && [ -d "$REPO" ]; then
+  cd "$REPO"
+fi
 
 # Create .env file
 echo "📝 Creating .env file..."
