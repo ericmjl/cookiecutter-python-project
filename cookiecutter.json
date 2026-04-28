@@ -10,5 +10,6 @@
     "__conda_env_name": "{{ cookiecutter.__project_kebabcase }}",
     "__repo_name": "{{ cookiecutter.__project_kebabcase }}",
     "__module_name": "{{ cookiecutter.__project_snakecase }}",
-    "__package_name": "{{ cookiecutter.__project_kebabcase }}"
+    "__package_name": "{{ cookiecutter.__project_kebabcase }}",
+    "_copy_without_render": [".agents/skills/**", ".github/**"]
 }
