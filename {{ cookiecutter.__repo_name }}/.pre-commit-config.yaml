@@ -13,8 +13,8 @@ repos:
     rev: 1.5.0
     hooks:
       - id: interrogate
-        args: [-c, pyproject.toml, --exclude, "setup.py,docs,build,examples,notebooks,.agents"]
-        pass_filenames: false
+        args: [-c, pyproject.toml]
+        exclude: ^(notebooks|\.agents)/
   - repo: https://github.com/jsh9/pydoclint
     rev: 0.3.8
     hooks:

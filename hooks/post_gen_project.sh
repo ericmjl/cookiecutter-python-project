@@ -77,12 +77,18 @@ git init -b main
 # Prompt user about creating GitHub repository
 REPO_NAME="{{ cookiecutter.__repo_name }}"
 echo ""
-echo "🤔 Would you like to create a GitHub repository for this project?"
-echo "   Repository name: ${REPO_NAME}"
-echo "   GitHub username: ${GITHUB_USERNAME}"
-echo ""
-read -p "Create GitHub repository? (y/N): " -n 1 -r
-echo ""
+
+if [ -t 0 ]; then
+    echo "🤔 Would you like to create a GitHub repository for this project?"
+    echo "   Repository name: ${REPO_NAME}"
+    echo "   GitHub username: ${GITHUB_USERNAME}"
+    echo ""
+    read -p "Create GitHub repository? (y/N): " -n 1 -r
+    echo ""
+else
+    REPLY=""
+    echo "ℹ️  Non-interactive mode: skipping GitHub repository creation."
+fi
 
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo "📦 Creating GitHub repository..."
