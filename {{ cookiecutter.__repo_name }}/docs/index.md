@@ -14,7 +14,7 @@ pip install {{ cookiecutter.__package_name }}
 ### Install from source
 
 ```bash
-pip install git@github.com:{{ cookiecutter.github_username }}/{{ cookiecutter.__repo_name }}
+pip install git@github.com:__GITHUB_USERNAME__/{{ cookiecutter.__repo_name }}
 ```
 
 ### Build and preview docs

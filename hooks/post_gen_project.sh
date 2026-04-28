@@ -34,33 +34,42 @@ fi
 # Configure Git
 echo "🔧 Configuring git..."
 
-# Get GitHub username from cookiecutter variable
-GITHUB_USERNAME="{{ cookiecutter.github_username }}"
-
-if command -v gh &> /dev/null; then
-    # Verify gh auth matches the requested username
-    AUTHED_USER=$(gh api user --jq .login 2>/dev/null || echo "")
-
-    if [ -n "$AUTHED_USER" ] && [ "$AUTHED_USER" != "$GITHUB_USERNAME" ]; then
-        echo "⚠️  gh is authenticated as '${AUTHED_USER}', but you specified '${GITHUB_USERNAME}'."
-        echo ""
-        read -p "Switch to '${GITHUB_USERNAME}'? (Y/n): " -n 1 -r
-        echo ""
-        if [[ ! $REPLY =~ ^[Nn]$ ]]; then
-            echo "🔄 Switching GitHub account..."
-            gh auth switch
-            AUTHED_USER=$(gh api user --jq .login)
-        fi
-    fi
-
-    if [ -n "$AUTHED_USER" ]; then
-        echo "🔍 GitHub account: ${AUTHED_USER}"
-        gh auth status
-    fi
-else
+# Infer GitHub username from gh CLI
+if ! command -v gh &> /dev/null; then
     echo "❌ GitHub CLI not found. Please install it first."
     exit 1
 fi
+
+GITHUB_USERNAME=$(gh api user --jq .login 2>/dev/null || echo "")
+if [ -z "$GITHUB_USERNAME" ]; then
+    echo "❌ Could not infer GitHub username. Please run 'gh auth login' first."
+    exit 1
+fi
+
+echo "🔍 GitHub account: ${GITHUB_USERNAME}"
+gh auth status
+
+# Infer full name and email from git config
+FULL_NAME=$(git config user.name 2>/dev/null || echo "")
+if [ -z "$FULL_NAME" ]; then
+    echo "❌ Could not infer full name. Please set it with: git config --global user.name \"Your Name\""
+    exit 1
+fi
+
+EMAIL=$(git config user.email 2>/dev/null || echo "")
+if [ -z "$EMAIL" ]; then
+    echo "❌ Could not infer email. Please set it with: git config --global user.email \"you@example.com\""
+    exit 1
+fi
+
+echo "📋 Full name: ${FULL_NAME}"
+echo "📋 Email: ${EMAIL}"
+
+# Replace placeholders in generated files
+echo "🔧 Filling in inferred values..."
+sed -i.bak "s|__GITHUB_USERNAME__|${GITHUB_USERNAME}|g" README.md mkdocs.yaml docs/index.md
+sed -i.bak "s|__FULL_NAME__|${FULL_NAME}|g" README.md
+find . -name "*.bak" -delete
 
 # Initialize git repository
 git init -b main

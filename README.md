@@ -62,9 +62,12 @@ When you run the template, you'll be prompted for:
 
 - **project_name**: The full name of your project (e.g., "My Awesome Analysis")
 - **short_description**: A brief description of what your project does
-- **github_username**: Your GitHub username
-- **full_name**: Your full name
-- **email**: Your email address
+
+The following are inferred automatically from your environment (no prompts):
+
+- **github_username**: From `gh api user`
+- **full_name**: From `git config user.name`
+- **email**: From `git config user.email`
 
 The template automatically generates:
 - **__project_kebabcase**: URL-friendly version (e.g., "my-awesome-analysis")
