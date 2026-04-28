@@ -67,7 +67,7 @@ testpaths = [
 [tool.pydoclint]
 style = 'sphinx'
 exclude = '\.git|\.tox|tests/data'
-require-return-section-when-returning-none = false
+require-return-section-when-returning-nothing = false
 arg-type-hints-in-docstring = false
 check-return-types = false
 
@@ -122,12 +122,6 @@ mkdocs = "*"
 mkdocs-material = "*"
 mknotebooks = "*"
 
-[tool.pixi.feature.notebook.dependencies]
-ipykernel = "*"
-ipython = "*"
-jupyter = "*"
-pixi-kernel = "*"
-
 [tool.pixi.feature.devtools.dependencies]
 pre-commit = "*"
 hatch = "*"
@@ -156,7 +150,7 @@ setup = "pre-commit autoupdate && pre-commit install --install-hooks"
 update = "pre-commit autoupdate"
 
 [tool.pixi.environments]
-default = { features = ["tests", "devtools", "notebook", "setup"] }
+default = { features = ["tests", "devtools", "setup"] }
 docs = { features = ["docs"] }
 tests = { features = ["tests", "setup"] }
-cuda = { features = ["tests", "devtools", "notebook", "setup", "cuda"] }
+cuda = { features = ["tests", "devtools", "setup", "cuda"] }

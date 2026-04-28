@@ -31,41 +31,31 @@ else
     exit 1
 fi
 
-# Create Jupyter kernel
-echo "🔧 Enabling Jupyter kernel discovery of your newfangled conda environment..."
-if command -v pixi &> /dev/null; then
-    pixi run python -m ipykernel install --user --name "$(basename "$PWD")"
-else
-    echo "❌ pixi not found. Skipping Jupyter kernel setup."
-fi
-
 # Configure Git
 echo "🔧 Configuring git..."
 
-# Get GitHub username from gh CLI
+# Get GitHub username from cookiecutter variable
+GITHUB_USERNAME="{{ cookiecutter.github_username }}"
+
 if command -v gh &> /dev/null; then
-    GITHUB_USERNAME=$(gh api user --jq .login)
-    if [ -z "$GITHUB_USERNAME" ]; then
-        echo "❌ Could not get GitHub username. Please ensure you're logged in with 'gh auth login'"
-        exit 1
+    # Verify gh auth matches the requested username
+    AUTHED_USER=$(gh api user --jq .login 2>/dev/null || echo "")
+
+    if [ -n "$AUTHED_USER" ] && [ "$AUTHED_USER" != "$GITHUB_USERNAME" ]; then
+        echo "⚠️  gh is authenticated as '${AUTHED_USER}', but you specified '${GITHUB_USERNAME}'."
+        echo ""
+        read -p "Switch to '${GITHUB_USERNAME}'? (Y/n): " -n 1 -r
+        echo ""
+        if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+            echo "🔄 Switching GitHub account..."
+            gh auth switch
+            AUTHED_USER=$(gh api user --jq .login)
+        fi
     fi
 
-    # Check GitHub account status and verify with user
-    echo "🔍 Checking GitHub account status..."
-    gh auth status
-
-    echo ""
-    echo "🤔 Please confirm you're using the correct GitHub account:"
-    echo "   Active account: ${GITHUB_USERNAME}"
-    echo ""
-    read -p "Is this the correct account? (Y/n): " -n 1 -r
-    echo ""
-
-    if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo "🔄 Switching GitHub account..."
-        gh auth switch
-        GITHUB_USERNAME=$(gh api user --jq .login)
-        echo "✅ Switched to account: ${GITHUB_USERNAME}"
+    if [ -n "$AUTHED_USER" ]; then
+        echo "🔍 GitHub account: ${AUTHED_USER}"
+        gh auth status
     fi
 else
     echo "❌ GitHub CLI not found. Please install it first."

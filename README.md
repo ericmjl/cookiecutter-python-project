@@ -13,7 +13,7 @@ This template creates a fully-featured Python project with modern tooling and be
 - **Source layout** with proper package structure
 - **Comprehensive testing** setup with pytest and coverage
 - **Documentation** with MkDocs and Material theme
-- **Jupyter integration** with ipykernel and notebook support
+- **Marimo notebooks** for reactive exploratory work
 
 ### 🛠️ Modern Tooling
 - **Pixi** for fast, reliable dependency management

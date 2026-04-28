@@ -8,7 +8,6 @@
         "vscode": {
             "extensions": [
                 "ms-azuretools.vscode-docker",
-                "ms-toolsai.jupyter",
                 "arcticicestudio.nord-visual-studio-code",
                 "ms-python.vscode-pylance",
                 "ms-python.python",
@@ -19,7 +18,5 @@
     "forwardPorts": [
         8888
     ],
-    "postCreateCommand": "pre-commit install && python -m ipykernel install --user --name {{ cookiecutter.project_name }} }}",
-    // Use 'postStartCommand' to run commands after the container is _started_.
-    "postStartCommand": "jupyter lab --allow-root"
+    "postCreateCommand": "pre-commit install"
 }
