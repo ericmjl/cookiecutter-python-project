@@ -90,22 +90,6 @@ else
     echo "ℹ️  Non-interactive mode: skipping GitHub repository creation."
 fi
 
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-    echo "📦 Creating GitHub repository..."
-    gh repo create "${GITHUB_USERNAME}/${REPO_NAME}" \
-        --private \
-        --description "{{ cookiecutter.short_description }}" \
-        --source . \
-        --remote origin \
-        --push
-    echo "✅ GitHub repository created and pushed!"
-else
-    echo "📝 Adding remote origin manually..."
-    GIT_SSH_URL="git@github.com:${GITHUB_USERNAME}/${REPO_NAME}"
-    git remote add origin "$GIT_SSH_URL"
-    echo "✅ Remote origin added. You can create the repository manually on GitHub later."
-fi
-
 # Install pre-commit hooks
 echo "🔧 Installing pre-commit hooks..."
 if command -v pre-commit &> /dev/null; then
@@ -181,6 +165,22 @@ commit_with_retry() {
 }
 
 commit_with_retry
+
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    echo "📦 Creating GitHub repository..."
+    gh repo create "${GITHUB_USERNAME}/${REPO_NAME}" \
+        --private \
+        --description "{{ cookiecutter.short_description }}" \
+        --source . \
+        --remote origin \
+        --push
+    echo "✅ GitHub repository created and pushed!"
+else
+    echo "📝 Adding remote origin manually..."
+    GIT_SSH_URL="git@github.com:${GITHUB_USERNAME}/${REPO_NAME}"
+    git remote add origin "$GIT_SSH_URL"
+    echo "✅ Remote origin added. You can create the repository manually on GitHub later."
+fi
 
 echo "🎉 Your project has been successfully initialized!"
 echo ""

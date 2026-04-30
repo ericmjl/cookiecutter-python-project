@@ -58,7 +58,7 @@ def test_post_gen_hook_contains_pixi_setup():
 
     # Check for pixi installation
     assert "pixi install" in hook_content, "Hook should install pixi environment"
-    assert "pixi run" in hook_content, "Hook should run pixi commands"
+    assert "pixi shell" in hook_content, "Hook should mention pixi shell activation"
 
 
 def test_post_gen_hook_contains_github_setup():
@@ -73,3 +73,24 @@ def test_post_gen_hook_contains_github_setup():
     # Check for GitHub CLI usage
     assert "gh repo create" in hook_content, "Hook should create GitHub repository"
     assert "gh auth" in hook_content, "Hook should check GitHub authentication"
+
+
+def test_post_gen_hook_commits_before_github_push() -> None:
+    """Ensure first commit happens before `gh repo create --push`.
+
+    This guards against a regression where the hook attempted to push to GitHub
+    before any commit existed, which makes `gh repo create --push` fail.
+    """
+    hook_file = Path(__file__).parent.parent / "hooks" / "post_gen_project.sh"
+    hook_content = hook_file.read_text()
+
+    github_create_idx = hook_content.index("gh repo create")
+    github_push_idx = hook_content.index("--push")
+    initial_commit_idx = hook_content.index('git commit -m "Initial commit"')
+
+    assert initial_commit_idx < github_create_idx, (
+        "Initial commit must happen before creating/pushing GitHub repository"
+    )
+    assert initial_commit_idx < github_push_idx, (
+        "Initial commit must happen before invoking --push"
+    )
