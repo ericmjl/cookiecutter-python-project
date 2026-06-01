@@ -53,19 +53,11 @@ jobs:
           cache: true
           cache-write: {{ '${{ github.event_name == "push" }}' }}
 
-      - name: Set up Python
-        run: |
-          uv tool install bump2version
-
       - name: Set version name
         run: echo "VERSION_NAME={{ '${{ github.event.inputs.version_name || env.DEFAULT_VERSION_NAME }}' }}" >> $GITHUB_ENV
 
-      - name: Dry run bump2version
-        run: |
-          bump2version --dry-run {{ '${{ env.VERSION_NAME }}' }} --allow-dirty --verbose
-
-      - name: Store new version number
-        run: echo "version_number=`bump2version --dry-run --list {{ '${{ env.VERSION_NAME }}' }} | grep new_version | sed -r s,\"^.*=\",,`" >> $GITHUB_ENV
+      - name: Bump version with uv
+        run: echo "version_number=$(uv version --bump {{ '${{ env.VERSION_NAME }}' }} | awk '{print $NF}')" >> $GITHUB_ENV
 
       - name: Display new version number
         run: |
@@ -80,8 +72,11 @@ jobs:
           git config user.name github-actions
           git config user.email github-actions@github.com
 
-      - name: Run bump2version
-        run: bump2version {{ '${{ env.VERSION_NAME }}' }} --verbose
+      - name: Git commit and tag
+        run: |
+          git add pyproject.toml
+          git commit -m "Bump version to {{ '${{ env.version_number }}' }}"
+          git tag v{{ '${{ env.version_number }}' }}
 
       - name: Ensure tag creation
         run: git tag | grep {{ '${{ env.version_number }}' }}
