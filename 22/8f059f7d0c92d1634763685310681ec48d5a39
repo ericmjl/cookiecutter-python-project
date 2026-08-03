@@ -1,0 +1,19 @@
+"{{ cookiecutter.__repo_name }}/.pre-commit-config.yaml"
+  s_4d51e730665e60::t_59af7807bdaf50 3,9,13,19,25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "228f059f7d0c92d1634763685310681ec48d5a39",
+  "prompts": {},
+  "sessions": {
+    "s_4d51e730665e60": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_03ab48d4fffet0OG8d5sfJPfW1",
+        "model": "glm-5.2"
+      },
+      "human_author": "Eric Ma <ericmajinglong@gmail.com>"
+    }
+  }
+}
