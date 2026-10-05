@@ -16,13 +16,13 @@ repos:
         args: [-c, pyproject.toml]
         exclude: ^(notebooks|\.agents)/
   - repo: https://github.com/jsh9/pydoclint
-    rev: 0.9.1
+    rev: 0.11.0
     hooks:
       - id: pydoclint
         args:
           - "--config=pyproject.toml"
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.16.2
+    rev: v0.16.10
     hooks:
       - id: ruff-check
         args: [--fix, --exit-non-zero-on-fix, --config, pyproject.toml]
